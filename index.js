@@ -10,7 +10,7 @@ app.post("/register", (req, res) => {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     const server = {
-        ip: ip,
+        ip: req.body.ip,
         port: req.body.port,
         name: req.body.name,
         lastSeen: Date.now()
