@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Newtonsoft.Json;
 [Serializable]
 public class PlayerCardCombo
 {
@@ -21,11 +22,6 @@ public class PlayerCardInfo
             players.Add(new PlayerCardCombo() { player = playerID, cards = playerDic[playerID].cards.ToList() });
         }
 
-        return JsonSerializer.Serialize(this,
-            new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                IncludeFields = true
-            });
+        return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }
