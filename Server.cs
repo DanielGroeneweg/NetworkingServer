@@ -446,6 +446,7 @@ public class Server
     }
     void PlayerCardInfo(string data)
     {
+        Logger.LogInfo("Sending card information now!");
         OSCMessageOut message = new OSCMessageOut("/PlayerCardInfo").AddString(data);
         Broadcast(message.GetBytes());
     }

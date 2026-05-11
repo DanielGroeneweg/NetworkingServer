@@ -153,7 +153,7 @@ public class TexasHoldemBoard
 
         if (playersStillIn == 1)
         {
-            EndRound(new List<int> { lastPlayerIndex + 1 });
+            EndRound(new List<int> { lastPlayerIndex + 1 }, false);
             return;
         }
 
@@ -407,7 +407,7 @@ public class TexasHoldemBoard
     /// Additionally, also check if there is a winner for the entire game yet.
     /// </summary>
     /// <param name="winner"></param>
-    void EndRound(List<int> winners)
+    void EndRound(List<int> winners, bool winDueToFolding)
     {
         string info = $"round ended with {winners.Count} winner(s): ";
         foreach (int winner in winners) { info += $"|{winner}| "; }
@@ -416,24 +416,16 @@ public class TexasHoldemBoard
         List<int> winnersIDList = new();
 
         // Multiple winners (tied), add all winners to a list, then give them money
-        if (winners.Count > 1)
+        foreach (int winner in winners)
         {
-            foreach (int winner in winners)
-            {
-                winnersIDList.Add(winner);
-                players[winner].AddMoney(pot / winners.Count);
-                OnUpdatePlayerMoney.Invoke(winner, players[winner].money);
-            }
-            SendPlayerCardsInfo();
+            winnersIDList.Add(winner);
+            players[winner].AddMoney(pot / winners.Count);
+            OnUpdatePlayerMoney.Invoke(winner, players[winner].money);
         }
 
-        // only 1 winner, give them the money!
-        else
+        if (!winDueToFolding)
         {
-            int winner = winners[0];
-            winnersIDList.Add(winners[0]);
-            players[winner].AddMoney(pot);
-            OnUpdatePlayerMoney(winner, players[winner].money);
+            SendPlayerCardsInfo();
         }
 
         // Reset Pot
