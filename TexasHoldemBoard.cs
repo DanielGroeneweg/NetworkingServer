@@ -368,6 +368,7 @@ public class TexasHoldemBoard
             betToBeMatched = 0;
         }
 
+        Logger.LogInfo("All players have been set for the next phase!");
         currentPhase++;
 
         // Deal board cards
