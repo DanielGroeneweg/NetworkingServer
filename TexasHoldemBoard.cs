@@ -455,21 +455,12 @@ public class TexasHoldemBoard
     /// </summary>
     void SendPlayerCardsInfo()
     {
-        List<Player> playerList = new();
-
-        foreach (int id in players.Keys)
-        {
-            Player player = players[id];
-            if (player.isInHand) playerList.Add(player);
-        }
-
         PlayerCardInfo info = new PlayerCardInfo();
         Dictionary<int, Player> playerDic = new();
 
-        foreach (Player player in playerList)
+        foreach (int id in players.Keys)
         {
-            int id = players.First(x => x.Value == player).Key;
-            playerDic.Add(id, player);
+            if (players[id].isInHand) playerDic.Add(id, players[id]);
         }
 
         string json = info.GetJSON(playerDic);
