@@ -13,7 +13,7 @@ public class PlayerCardCombo
 public class PlayerCardInfo
 {
     public List<PlayerCardCombo> players = new();
-    public string GetJSON(Dictionary<int, Player> playerDic)
+    public string GetJSON(Dictionary<int, Player> playerDic, Card[] board)
     {
         // Run through all players, make a PlayerCardCombo that stores a player's cards and their ID.
         // Add this PlayerCardCombo to a list se we can serialize it to json so the server can send it.
@@ -21,6 +21,8 @@ public class PlayerCardInfo
         {
             players.Add(new PlayerCardCombo() { player = playerID, cards = playerDic[playerID].cards.ToList() });
         }
+
+        players.Add(new PlayerCardCombo() { player = -1, cards = board.ToList() });
 
         return JsonConvert.SerializeObject(this, Formatting.Indented);
     }

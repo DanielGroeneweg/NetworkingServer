@@ -463,7 +463,7 @@ public class TexasHoldemBoard
             if (players[id].isInHand) playerDic.Add(id, players[id]);
         }
 
-        string json = info.GetJSON(playerDic);
+        string json = info.GetJSON(playerDic, cardsOnBoard);
         OnPlayerCardInfo.Invoke(json);
     }
     void DetermineWinner()
