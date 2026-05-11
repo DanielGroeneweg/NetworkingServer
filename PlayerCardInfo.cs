@@ -11,7 +11,7 @@ public class PlayerCardCombo
 [Serializable]
 public class PlayerCardInfo
 {
-    List<PlayerCardCombo> players { get; set; } = new();
+    public List<PlayerCardCombo> players { get; set; } = new();
     public string GetJSON(Dictionary<int, Player> playerDic)
     {
         // Run through all players, make a PlayerCardCombo that stores a player's cards and their ID.
