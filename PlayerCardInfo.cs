@@ -5,13 +5,13 @@ using System.Text.Json;
 [Serializable]
 public class PlayerCardCombo
 {
-    public int player { get; set; }
-    public List<Card> cards { get; set; }
+    public int player;
+    public List<Card> cards;
 }
 [Serializable]
 public class PlayerCardInfo
 {
-    public List<PlayerCardCombo> players { get; set; } = new();
+    public List<PlayerCardCombo> players = new();
     public string GetJSON(Dictionary<int, Player> playerDic)
     {
         // Run through all players, make a PlayerCardCombo that stores a player's cards and their ID.

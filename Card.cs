@@ -1,7 +1,7 @@
 public class Card
 {
-    public Suits suit { get; private set; }
-    public Ranks rank { get; private set; }
+    public Suits suit;
+    public Ranks rank;
     public Card(Suits suit, Ranks rank)
     {
         this.suit = suit;
