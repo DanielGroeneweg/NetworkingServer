@@ -634,9 +634,9 @@ public class TexasHoldemBoard
 
             foreach (int id in pot.eligiblePlayers)
             {
-                if (players[id - 1].isInHand)
+                if (players[id].isInHand)
                 {
-                    eligiblePlayers.Add(players[id - 1]);
+                    eligiblePlayers.Add(players[id]);
                 }
             }
 
@@ -755,7 +755,7 @@ public class TexasHoldemBoard
                 {
                     if (players[id].isInHand)
                     {
-                        OnRoundEnd.Invoke(new List<int> () { id });
+                        OnRoundEnd.Invoke(new List<int>() { id });
                         return;
                     }
                 }
