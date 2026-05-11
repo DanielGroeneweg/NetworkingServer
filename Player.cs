@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 public class Player
 {
     public int money {  get; private set; }
@@ -37,12 +37,12 @@ public class Player
             return;
         }
     }
-    public void AddMoney(int value) { money += Mathf.Abs(value); }
+    public void AddMoney(int value) { money += Math.Abs(value); }
     public void Bet(int value)
     {
-        money -= Mathf.Abs(value);
-        betMoney += Mathf.Abs(value);
-        totalBetMoney += Mathf.Abs(value);
+        money -= Math.Abs(value);
+        betMoney += Math.Abs(value);
+        totalBetMoney += Math.Abs(value);
     }
     public void ResetBetMoney() { betMoney = 0; }
     public void ResetTotalBetMoney() {  totalBetMoney = 0; }

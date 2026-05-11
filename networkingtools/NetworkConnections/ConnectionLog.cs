@@ -1,8 +1,3 @@
-// Comment out this line for console projects:
-#define UNITY
-#if UNITY
-using UnityEngine;
-#endif
 using System;
 
 namespace NetworkConnections {
