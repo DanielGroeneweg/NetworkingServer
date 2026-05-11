@@ -466,6 +466,12 @@ public class TexasHoldemBoard
         PlayerCardInfo info = new PlayerCardInfo();
         Dictionary<int, Player> playerDic = new();
 
+        foreach (Player player in playerList)
+        {
+            int id = players.First(x => x.Value == player).Key;
+            playerDic.Add(id, player);
+        }
+
         string json = info.GetJSON(playerDic);
         OnPlayerCardInfo.Invoke(json);
     }
