@@ -586,7 +586,7 @@ public class TexasHoldemBoard
         List<PlayerContribution> active = new();
         for (int i = 0; i < players.Keys.Count; i++)
         {
-            Player player = players[i];
+            Player player = players[i + 1];
             if (player.totalBetMoney > 0) active.Add(new PlayerContribution() { player = player, id = i + 1 });
         }
         active = active.OrderBy(p => p.player.totalBetMoney).ToList();
