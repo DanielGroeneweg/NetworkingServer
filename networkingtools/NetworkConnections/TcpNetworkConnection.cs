@@ -202,5 +202,24 @@ namespace NetworkConnections {
 			Status = ConnectionStatus.Disconnected;
 			socket.Close();
 		}
-	}
+
+        public bool IsConnected
+        {
+            get
+            {
+                if (Status != ConnectionStatus.Connected) return false;
+
+                try
+                {
+                    Socket s = socket.Client;
+
+                    return !(s.Poll(0, SelectMode.SelectRead) && s.Available == 0);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+    }
 }

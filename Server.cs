@@ -84,7 +84,7 @@ public class Server
         {
             Logger.LogInfo("Sorry - already have six players");
             // Note: this client is still allowed to join as spectator, but not as player!
-            // TODO: Send a message to this client
+            newClient.Send(new OSCMessageOut("/Spectator").GetBytes());
         }
     }
 
@@ -110,7 +110,35 @@ public class Server
 
     void CleanupConnections()
     {
-        // TODO
+        List<TcpNetworkConnection> dead = new();
+
+        foreach (TcpNetworkConnection conn in connections)
+        {
+            if (!conn.IsConnected)
+            {
+                Logger.LogInfo("Client disconnected: " + conn.Remote);
+                dead.Add(conn);
+            }
+        }
+
+        foreach (TcpNetworkConnection conn in dead)
+        {
+            connections.Remove(conn);
+
+            if (playerIDs.TryGetValue(conn, out int playerID))
+            {
+                playerIDs.Remove(conn);
+                board.RemovePlayer(playerID);
+                Logger.LogInfo($"Removed player {playerID}");
+            }
+
+            if (host == conn)
+            {
+                host = connections.Count > 0 ? connections[0] : null;
+            }
+
+            conn.Close();
+        }
     }
 
     void Initialize()
