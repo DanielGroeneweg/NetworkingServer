@@ -709,6 +709,7 @@ public class TexasHoldemBoard
     public void RemovePlayer(int player)
     {
         if (!players.ContainsKey(player)) return;
+
         if (players[player] == null)
         {
             players.Remove(player);
@@ -719,7 +720,7 @@ public class TexasHoldemBoard
 
         // Check if there is only one player left in the GAME
         {
-            if (players.Keys.Count <= 1)
+            if (players.Keys.Count == 1)
             {
                 // One player left, make them the winner!
                 OnGameEnd?.Invoke(players.Keys.First());
