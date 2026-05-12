@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 /// <summary>
@@ -22,6 +23,8 @@ public class Server
     Dictionary<TcpNetworkConnection, int> playerIDs = new Dictionary<TcpNetworkConnection, int>();
 
     TcpNetworkConnection host;
+
+    bool gameStarted = false;
 
     public async Task Start()
     {
@@ -142,16 +145,29 @@ public class Server
 
             conn.Close();
 
-            if (playerIDs.Keys.Count == 0)
+            // Kick out the last player if everyone else disconnected, do Send a message to them though!
+            if (gameStarted && playerIDs.Keys.Count <= 1)
             {
-                Logger.LogInfo("No players! Re-Initializing server!");
+                Logger.LogInfo("No or 1 player(s) left! Re-Initializing server!");
+
                 CleanUpServer();
                 Initialize();
+                return;
             }
         }
     }
     void CleanUpServer()
     {
+        // Kick out all players/spectators
+        foreach (TcpNetworkConnection connection in connections)
+        {
+            connection.Send(new OSCMessageOut("/KickPlayer").GetBytes());
+            connection.Close();
+        }
+        connections.Clear();
+        playerIDs.Clear();
+
+        // Reset dispatcher
         dispatcher.RemoveListener("/Bet", BetRpc);
         dispatcher.RemoveListener("/Call", CallRpc);
         dispatcher.RemoveListener("/Check", CheckRpc);
@@ -159,6 +175,27 @@ public class Server
         dispatcher.RemoveListener("/Fold", FoldRpc);
         dispatcher.RemoveListener("/NewRound", NewRoundRequestRpc);
         dispatcher.RemoveListener("/NewGame", NewGameRequestRpc);
+
+        // Reset board events
+        board.OnUpdatePot -= UpdatePotRpc;
+        board.OnUpdatePlayerMoney -= UpdatePlayerMoneyRpc;
+        board.OnNextPlayer -= NextPlayerRpc;
+        board.OnChangePlayerOptions -= ChangePlayerRpc;
+        board.OnNextPhase -= NextPhaseRpc;
+        board.OnNewRound -= NewRoundRpc;
+        board.OnDealPlayerCards -= DealPlayerCardsRpc;
+        board.OnDealTableCards -= DealTableCardsRpc;
+        board.OnInvalidAction -= InvalidActionRpc;
+        board.OnInvalidNewRound -= InvalidNewRoundRpc;
+        board.OnInvalidNewGame -= InvalidNewGameRpc;
+        board.OnPlayerInformation -= PlayerInformationRpc;
+        board.OnRoundEnd -= EndRoundRpc;
+        board.OnGameEnd -= GameEndRpc;
+        board.OnPlayerCardInfo -= PlayerCardInfoRpc;
+
+        // Variable reset
+        host = null;
+        gameStarted = false;
     }
     void Initialize()
     {
@@ -387,6 +424,7 @@ public class Server
     {
         OSCMessageOut message = new OSCMessageOut("/NewRound");
         Broadcast(message.GetBytes());
+        gameStarted = true;
     }
     void DealPlayerCardsRpc(Card card1, Card card2, int player)
     {
