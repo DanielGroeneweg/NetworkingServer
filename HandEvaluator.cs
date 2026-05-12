@@ -233,7 +233,7 @@ public class HandEvaluator
             bestHand.combinationValues = new List<int> { groups[0].Key };
 
             // 4th and 5th card should be the highest value cards, not including the ones in the three of a kind.
-            while (values.Contains(groups[0].Value)) values.Remove(groups[0].Value);
+            while (values.Contains(groups[0].Key)) values.Remove(groups[0].Key);
             bestHand.tieBrakerValues = new List<int>() { values[0], values[1] };
             return bestHand;
         }
@@ -246,8 +246,8 @@ public class HandEvaluator
             bestHand.combinationValues = new List<int> { groups[0].Key, groups[1].Key };
 
             //5th card should be the highest value cards, not including the ones in the pairs.
-            while (values.Contains(groups[0].Value)) values.Remove(groups[0].Value);
-            while (values.Contains(groups[1].Value)) values.Remove(groups[1].Value);
+            while (values.Contains(groups[0].Key)) values.Remove(groups[0].Key);
+            while (values.Contains(groups[1].Key)) values.Remove(groups[1].Key);
             bestHand.tieBrakerValues = new List<int>() { values[0] };
             return bestHand;
         }
@@ -260,7 +260,7 @@ public class HandEvaluator
             bestHand.combinationValues = new List<int> { groups[0].Key };
 
             //3rd, 4th and 5th card should be the highest value cards, not including the ones in the pair.
-            while (values.Contains(groups[0].Value)) values.Remove(groups[0].Value);
+            while (values.Contains(groups[0].Key)) values.Remove(groups[0].Key);
             bestHand.tieBrakerValues = new List<int>() { values[0], values[1], values[2] };
             return bestHand;
         }
