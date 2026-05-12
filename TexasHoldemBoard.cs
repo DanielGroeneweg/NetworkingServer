@@ -137,23 +137,25 @@ public class TexasHoldemBoard
         Logger.LogInfo($"Player {_activePlayer} took action: {BettingActions.Fold}, money in pot: {pot} | player money: {players[activePlayer].money}");
 
         players[_activePlayer].isInHand = false;
+
         // Check if only one player remains
         int playersStillIn = 0;
         int lastPlayerIndex = -1;
 
         // Do a check for if everyone but one person folded
-        for (int i = 0; i < players.Keys.Count; i++)
+        foreach (int id in players.Keys)
         {
-            if (players[i + 1].isInHand)
+            Player p = players[id];
+            if (p.isInHand)
             {
                 playersStillIn++;
-                lastPlayerIndex = i;
+                lastPlayerIndex = id;
             }
         }
 
         if (playersStillIn == 1)
         {
-            EndRound(new List<int> { lastPlayerIndex + 1 });
+            EndRound(new List<int> { lastPlayerIndex });
             return;
         }
 
@@ -429,9 +431,9 @@ public class TexasHoldemBoard
 
         // Get a list of all players who have not yet gone bankrupt
         List<int> playersInGame = new();
-        for (int i = 0; i < players.Keys.Count; i++)
+        foreach (int id in players.Keys)
         {
-            if (players[i + 1].money > 0) playersInGame.Add(i);
+            if (players[id].money > 0) playersInGame.Add(id);
         }
 
         // only 1 player with money remains, game ended with a winner!
@@ -439,7 +441,7 @@ public class TexasHoldemBoard
         {
             roundRunning = false;
             gameRunning = false;
-            OnGameEnd.Invoke(playersInGame[0] + 1);
+            OnGameEnd.Invoke(playersInGame[0]);
         }
 
         // Still multiple people with money in the game, send everyone winning player(s) information!
@@ -537,22 +539,23 @@ public class TexasHoldemBoard
         Card[] cards = new Card[2];
         cardsOnBoard = new Card[5];
 
-        for (int i = 0; i <= players.Keys.Count - 1; i++)
+        foreach (int id in players.Keys)
         {
-            if (!players[i + 1].isInHand)
+            Player player = players[id];
+            if (!player.isInHand)
             {
-                Logger.LogInfo($"Player {i + 1} has no money and can thus not participate anymore!");
+                Logger.LogInfo($"Player {id} has no money and can thus not participate anymore!");
                 continue;
             }
 
             cards[0] = deckOfCards.DrawCard();
             cards[1] = deckOfCards.DrawCard();
 
-            if (cards[0] != null && cards[1] != null) { players[i + 1] = new Player(players[i + 1].money, cards); }
+            if (cards[0] != null && cards[1] != null) { player = new Player(player.money, cards); }
 
-            Logger.LogInfo($"Player {i + 1} has been dealt cards: {cards[0].ToString()}, {cards[1].ToString()}");
+            Logger.LogInfo($"Player {id} has been dealt cards: {cards[0].ToString()}, {cards[1].ToString()}");
 
-            OnDealPlayerCards?.Invoke(cards[0], cards[1], i + 1);
+            OnDealPlayerCards?.Invoke(cards[0], cards[1], id);
         }
 
         NextTurn(BettingActions.None);
@@ -569,10 +572,10 @@ public class TexasHoldemBoard
 
         // Create a list of all active players, then order it so the player with the lowest bid comes first
         List<PlayerContribution> active = new();
-        for (int i = 0; i < players.Keys.Count; i++)
+        foreach (int id in players.Keys)
         {
-            Player player = players[i + 1];
-            if (player.totalBetMoney > 0) active.Add(new PlayerContribution() { player = player, id = i + 1 });
+            Player player = players[id];
+            if (player.totalBetMoney > 0) active.Add(new PlayerContribution() { player = player, id = id });
         }
         active = active.OrderBy(p => p.player.totalBetMoney).ToList();
 
@@ -628,10 +631,10 @@ public class TexasHoldemBoard
 
             // Get a list of eligible players (both in the pot AND not folded)
             List<PlayerContribution> subset = new();
-            for (int i = 0; i < players.Keys.Count; i++)
+            foreach (int id in players.Keys)
             {
-                Player player = players[i + 1];
-                if (pot.eligiblePlayers.Contains(i + 1) && players[i + 1].isInHand) subset.Add(new PlayerContribution() { player = player, id = i + 1 });
+                Player player = players[id];
+                if (pot.eligiblePlayers.Contains(id) && players[id].isInHand) subset.Add(new PlayerContribution() { player = player, id = id });
             }
 
             // Use LinQ to find the Player variable in the list of eligible players
@@ -683,9 +686,9 @@ public class TexasHoldemBoard
 
         // Get a list of all players who have not yet gone bankrupt
         List<int> playersInGame = new();
-        for (int i = 0; i < players.Keys.Count; i++)
+        foreach (int id in players.Keys)
         {
-            if (players[i + 1].money > 0) playersInGame.Add(i);
+            if (players[id].money > 0) playersInGame.Add(id);
         }
 
         // only 1 player with money remains, game ended with a winner!
@@ -693,7 +696,7 @@ public class TexasHoldemBoard
         {
             roundRunning = false;
             gameRunning = false;
-            OnGameEnd.Invoke(playersInGame[0] + 1);
+            OnGameEnd.Invoke(playersInGame[0]);
         }
 
         // Still multiple people with money in the game, send everyone winning player(s) information!
