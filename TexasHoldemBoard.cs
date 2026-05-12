@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 public class TexasHoldemBoard
 {
@@ -274,11 +275,18 @@ public class TexasHoldemBoard
     {
         int startPlayer = _activePlayer;
         bool foundNextPlayer = false;
+        List<int> ids = players.Keys.OrderBy(x => x).ToList();
+        int idIndexInList = ids.IndexOf(_activePlayer);
+
         while (!foundNextPlayer)
         {
             if (EveryoneAllIn()) DealRemainingCards();
 
-            int newActivePlayer = _activePlayer >= players.Keys.Count ? 1 : _activePlayer + 1;
+            idIndexInList = idIndexInList >= ids.Count - 1 ? 0 : idIndexInList + 1;
+
+            int newActivePlayer = ids[idIndexInList];
+
+
             Logger.LogInfo($"Moving from Player {_activePlayer} to Player {newActivePlayer}");
             _activePlayer = newActivePlayer;
 
@@ -564,9 +572,6 @@ public class TexasHoldemBoard
 
             if (cards[0] != null && cards[1] != null) { player = new Player(player.money, cards); }
 
-            player.cards[0] = cards[0];
-            player.cards[1] = cards[1];
-
             Logger.LogInfo($"Player {id} has been dealt cards: {cards[0].ToString()}, {cards[1].ToString()}");
 
             OnDealPlayerCards?.Invoke(cards[0], cards[1], id);
@@ -653,6 +658,7 @@ public class TexasHoldemBoard
 
             // Use LinQ to find the Player variable in the list of eligible players
             List<Player> subsetPlayers = subset.Select(x => x.player).ToList();
+
             List<int> winnerIndexes = HandEvaluator.GetWinners(subsetPlayers, cardsOnBoard);
 
             // Map back to real player IDs
