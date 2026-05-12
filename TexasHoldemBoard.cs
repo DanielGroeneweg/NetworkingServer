@@ -564,6 +564,9 @@ public class TexasHoldemBoard
 
             if (cards[0] != null && cards[1] != null) { player = new Player(player.money, cards); }
 
+            player.cards[0] = cards[0];
+            player.cards[1] = cards[1];
+
             Logger.LogInfo($"Player {id} has been dealt cards: {cards[0].ToString()}, {cards[1].ToString()}");
 
             OnDealPlayerCards?.Invoke(cards[0], cards[1], id);
