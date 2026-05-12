@@ -399,6 +399,17 @@ public class TexasHoldemBoard
 
         if (currentPhase == GamePhases.Showdown)
         {
+            // Ensure board is complete
+            for (int i = 0; i < cardsOnBoard.Length; i++)
+            {
+                if (cardsOnBoard[i] == null)
+                {
+                    cardsOnBoard[i] = deckOfCards.DrawCard();
+                }
+            }
+
+            OnDealTableCards?.Invoke(cardsOnBoard);
+
             DetermineWinner();
         }
 

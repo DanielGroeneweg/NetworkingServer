@@ -441,6 +441,12 @@ public class HandEvaluator
     /// <returns></returns>
     static int GetCardValue(Card card)
     {
+        if (card == null)
+        {
+            Logger.LogInfo("Null card detected");
+            return -1;
+        }
+
         int value = (int)card.rank;
 
         // Ace should be high (14)
