@@ -80,7 +80,7 @@ public class Server
             int newID = playerIDs.Count + 1;
             playerIDs[newClient] = newID;
             Logger.LogInfo($"Registering new player: {newClient.Remote} = player {playerIDs[newClient]}");
-            PlayerIDRpc(newID, newClient);
+            newClient.Send(new OSCMessageOut("/PlayerID").AddInt(newID).GetBytes());
         }
         else
         {
@@ -137,6 +137,7 @@ public class Server
             if (host == conn)
             {
                 host = connections.Count > 0 ? connections[0] : null;
+                if (host != null) host.Send(new OSCMessageOut("/SendHostInformation").GetBytes());
             }
 
             conn.Close();
@@ -467,11 +468,6 @@ public class Server
         Logger.LogInfo("Sending card information now!");
         OSCMessageOut message = new OSCMessageOut("/PlayerCardInfo").AddString(data);
         Broadcast(message.GetBytes());
-    }
-    void PlayerIDRpc(int id, TcpNetworkConnection connection)
-    {
-        OSCMessageOut message = new OSCMessageOut("/PlayerID").AddInt(id);
-        connection.Send(message.GetBytes());
     }
     #endregion
 }
