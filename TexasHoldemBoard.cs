@@ -570,7 +570,7 @@ public class TexasHoldemBoard
             cards[0] = deckOfCards.DrawCard();
             cards[1] = deckOfCards.DrawCard();
 
-            if (cards[0] != null && cards[1] != null) { player = new Player(player.money, cards); }
+            if (cards[0] != null && cards[1] != null) players[id] = new Player(player.money, cards);
 
             Logger.LogInfo($"Player {id} has been dealt cards: {cards[0].ToString()}, {cards[1].ToString()}");
 
