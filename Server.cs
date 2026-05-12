@@ -77,8 +77,10 @@ public class Server
         if (playerIDs.Count < 6)
         {
             // We had fewer than 6 players, so this new client will be a player.
-            playerIDs[newClient] = playerIDs.Count + 1;
+            int newID = playerIDs.Count + 1;
+            playerIDs[newClient] = newID;
             Logger.LogInfo($"Registering new player: {newClient.Remote} = player {playerIDs[newClient]}");
+            PlayerIDRpc(newID, newClient);
         }
         else
         {
@@ -138,9 +140,25 @@ public class Server
             }
 
             conn.Close();
+
+            if (playerIDs.Keys.Count == 0)
+            {
+                Logger.LogInfo("No players! Re-Initializing server!");
+                CleanUpServer();
+                Initialize();
+            }
         }
     }
-
+    void CleanUpServer()
+    {
+        dispatcher.RemoveListener("/Bet", BetRpc);
+        dispatcher.RemoveListener("/Call", CallRpc);
+        dispatcher.RemoveListener("/Check", CheckRpc);
+        dispatcher.RemoveListener("/Raise", RaiseRpc);
+        dispatcher.RemoveListener("/Fold", FoldRpc);
+        dispatcher.RemoveListener("/NewRound", NewRoundRequestRpc);
+        dispatcher.RemoveListener("/NewGame", NewGameRequestRpc);
+    }
     void Initialize()
     {
         board = new TexasHoldemBoard();
@@ -160,7 +178,7 @@ public class Server
         board.OnPlayerInformation += PlayerInformationRpc;
         board.OnRoundEnd += EndRoundRpc;
         board.OnGameEnd += GameEndRpc;
-        board.OnPlayerCardInfo += PlayerCardInfo;
+        board.OnPlayerCardInfo += PlayerCardInfoRpc;
 
         //(Note: no unsubscribe needed in OnDestroy, since the server owns the private board variable.)
 
@@ -444,11 +462,16 @@ public class Server
             conn.Send(packet);
         }
     }
-    void PlayerCardInfo(string data)
+    void PlayerCardInfoRpc(string data)
     {
         Logger.LogInfo("Sending card information now!");
         OSCMessageOut message = new OSCMessageOut("/PlayerCardInfo").AddString(data);
         Broadcast(message.GetBytes());
+    }
+    void PlayerIDRpc(int id, TcpNetworkConnection connection)
+    {
+        OSCMessageOut message = new OSCMessageOut("/PlayerID").AddInt(id);
+        connection.Send(message.GetBytes());
     }
     #endregion
 }
