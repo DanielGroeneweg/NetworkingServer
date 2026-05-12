@@ -16,25 +16,13 @@ public class HandEvaluator
     /// <returns></returns>
     public static List<int> GetWinners(List<Player> players, Card[] board)
     {
-        // DEBUGGING
-        bool boardHasNull = false;
-        for (int i = 0; i < board.Length; i++)
-        {
-            Card card = board[i];
-            if (card == null)
-            {
-                Logger.LogInfo("NULL CARD ON BOARD DETECTED");
-                boardHasNull = true;
-            }
-        }
-        if (!boardHasNull) Logger.LogInfo("BOARD IS GOOD");
 
         bool playerHasNull = false;
         for (int i = 0; i < players.Count; i++)
         {
             Player player = players[i];
-            if (player.cards[0] == null) Logger.LogInfo("NULL CARD ON PLAYER DETECTED");
-            if (player.cards[1] == null) Logger.LogInfo("NULL CARD ON PLAYER DETECTED");
+            if (player.cards[0] == null) Logger.LogInfo($"NULL CARD 0 ON PLAYER {i} DETECTED");
+            if (player.cards[1] == null) Logger.LogInfo($"NULL CARD 1 ON PLAYER {i} DETECTED");
         }
         
 
