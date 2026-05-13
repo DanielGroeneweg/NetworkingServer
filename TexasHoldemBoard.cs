@@ -99,7 +99,10 @@ public class TexasHoldemBoard
             lastPickedAction == BettingActions.Fold ||
             lastPickedAction == BettingActions.None)
             && phasePot == 0)
+        {
+            Logger.LogInfo($"Bet was invalid because last action was {lastPickedAction}");
             return;
+        }
 
         if (money <= 0)
         {
