@@ -63,6 +63,7 @@ public class TexasHoldemBoard
 
     // The amount of money in the pot
     int pot = 0;
+    int phasePot = 0;
 
     int betToBeMatched;
 
@@ -93,6 +94,13 @@ public class TexasHoldemBoard
     {
         if (!ValidAction(player)) return;
 
+        // Check if action is allowed after previous action
+        if ((lastPickedAction == BettingActions.Check ||
+            lastPickedAction == BettingActions.Fold ||
+            lastPickedAction == BettingActions.None)
+            && phasePot == 0)
+            return;
+
         if (money <= 0)
         {
             Logger.LogInfo($"Player {_activePlayer} put in a bet that is too small");
@@ -108,6 +116,7 @@ public class TexasHoldemBoard
         }
 
         pot += money;
+        phasePot += money;
         OnUpdatePot?.Invoke(pot);
 
         players[_activePlayer].Bet(money);
@@ -124,6 +133,17 @@ public class TexasHoldemBoard
     public void Check(int player)
     {
         if (!ValidAction(player)) return;
+
+        // Check if action is allowed after previous action
+        if (!(lastPickedAction == BettingActions.Check ||
+            lastPickedAction == BettingActions.Fold ||
+            lastPickedAction == BettingActions.None)
+            && phasePot == 0)
+            return;
+
+        // Check if action is allowed after previous action
+        if (!(lastPickedAction == BettingActions.Check || lastPickedAction == BettingActions.Fold || lastPickedAction == BettingActions.None))
+            return;
 
         lastPickedAction = BettingActions.Check;
 
@@ -167,6 +187,12 @@ public class TexasHoldemBoard
     {
         if (!ValidAction(player)) return;
 
+        // Check if action is allowed after previous action
+        if (!(lastPickedAction == BettingActions.Bet ||
+            lastPickedAction == BettingActions.Raise ||
+            lastPickedAction == BettingActions.Call))
+            return;
+
         if (money <= 0)
         {
             Logger.LogInfo($"Player {_activePlayer} put in a bet that is too small");
@@ -183,6 +209,7 @@ public class TexasHoldemBoard
             return;
         }
         pot += moneyIncrease;
+        phasePot += money;
         OnUpdatePot?.Invoke(pot);
 
         players[_activePlayer].Bet(moneyIncrease);
@@ -200,9 +227,15 @@ public class TexasHoldemBoard
     {
         if (!ValidAction(player)) return;
 
+        // Check if action is allowed after previous action
+        if (!(lastPickedAction == BettingActions.Bet ||
+            lastPickedAction == BettingActions.Raise))
+            return;
+
         int moneyForPot = (int)MathF.Min(players[_activePlayer].money, betToBeMatched - players[_activePlayer].betMoney);
 
         pot += moneyForPot;
+        phasePot += moneyForPot;
         OnUpdatePot?.Invoke(pot);
 
         players[_activePlayer].Bet(moneyForPot);
@@ -380,6 +413,8 @@ public class TexasHoldemBoard
 
         Logger.LogInfo("All players have been set for the next phase!");
         currentPhase++;
+        lastPickedAction = BettingActions.None;
+        phasePot = 0;
 
         // Deal board cards
         switch (currentPhase)
