@@ -75,7 +75,7 @@ public class TexasHoldemBoard
 
     Card[] cardsOnBoard = new Card[5];
 
-    BettingActions lastPickedAction;
+    BettingActions lastPickedAction = BettingActions.None;
 
     public int activePlayer
     {
@@ -574,6 +574,7 @@ public class TexasHoldemBoard
         roundRunning = true;
         pot = 0;
         currentPhase = GamePhases.PreFlop;
+        lastPickedAction = BettingActions.None;
 
         foreach (int id in players.Keys)
         {
