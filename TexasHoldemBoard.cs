@@ -95,7 +95,7 @@ public class TexasHoldemBoard
         if (!ValidAction(player)) return;
 
         // Check if action is allowed after previous action
-        if ((lastPickedAction == BettingActions.Check ||
+        if (!(lastPickedAction == BettingActions.Check ||
             lastPickedAction == BettingActions.Fold ||
             lastPickedAction == BettingActions.None)
             && phasePot == 0)
