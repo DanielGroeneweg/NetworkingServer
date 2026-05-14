@@ -242,7 +242,8 @@ public class TexasHoldemBoard
 
         // Check if action is allowed after previous action
         if (!(lastPickedAction == BettingActions.Bet ||
-            lastPickedAction == BettingActions.Raise))
+            lastPickedAction == BettingActions.Raise ||
+            lastPickedAction == BettingActions.Call))
             return;
 
         int moneyForPot = (int)MathF.Min(players[_activePlayer].money, betToBeMatched - players[_activePlayer].betMoney);
