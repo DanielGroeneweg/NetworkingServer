@@ -556,7 +556,8 @@ public class TexasHoldemBoard
             return;
         }
 
-        players.Clear();
+        ResetBoard();
+        
         _playerAmount = playerAmount;
 
         for (int i = 0; i < _playerAmount; i++)
@@ -570,6 +571,20 @@ public class TexasHoldemBoard
 
         StartRound();
     }
+    void ResetBoard()
+    {
+        players.Clear();
+        pot = 0;
+        phasePot = 0;
+        _activePlayer = 1;
+        cardsOnBoard = new Card[5];
+        betToBeMatched = 0;
+        roundRunning = false;
+        gameRunning = false;
+        currentPhase = GamePhases.PreFlop;
+        lastPickedAction = BettingActions.None;
+    }
+    
     /// <summary>
     /// Starts a new round, it starts by dealing each participating player a hand of 2 cards.
     /// Should only be called from the host.
