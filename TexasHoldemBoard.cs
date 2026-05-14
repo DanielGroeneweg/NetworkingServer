@@ -592,6 +592,8 @@ public class TexasHoldemBoard
         currentPhase = GamePhases.PreFlop;
         lastPickedAction = BettingActions.None;
 
+        OnNextPhase?.Invoke((int)currentPhase);
+
         foreach (int id in players.Keys)
         {
             Player player = players[id];
