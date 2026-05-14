@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /// <summary>
 /// The Server is the class that manages network connections with all clients, and 
@@ -192,6 +193,7 @@ public class Server
         board.OnRoundEnd -= EndRoundRpc;
         board.OnGameEnd -= GameEndRpc;
         board.OnPlayerCardInfo -= PlayerCardInfoRpc;
+        board.OnValidPlayerAction -= ValidPlayerActionRpc;
 
         // Variable reset
         host = null;
@@ -217,6 +219,7 @@ public class Server
         board.OnRoundEnd += EndRoundRpc;
         board.OnGameEnd += GameEndRpc;
         board.OnPlayerCardInfo += PlayerCardInfoRpc;
+        board.OnValidPlayerAction += ValidPlayerActionRpc;
 
         //(Note: no unsubscribe needed in OnDestroy, since the server owns the private board variable.)
 
@@ -503,8 +506,12 @@ public class Server
     }
     void PlayerCardInfoRpc(string data)
     {
-        Logger.LogInfo("Sending card information now!");
         OSCMessageOut message = new OSCMessageOut("/PlayerCardInfo").AddString(data);
+        Broadcast(message.GetBytes());
+    }
+    void ValidPlayerActionRpc(int player, int action)
+    {
+        OSCMessageOut message = new OSCMessageOut("/ValidPlayerAction").AddInt(player).AddInt(action);
         Broadcast(message.GetBytes());
     }
     #endregion

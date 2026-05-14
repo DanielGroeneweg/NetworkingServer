@@ -53,6 +53,8 @@ public class TexasHoldemBoard
     public delegate void PlayerCardInfoEvent(string data);
     public event PlayerCardInfoEvent OnPlayerCardInfo;
 
+    public delegate void ValidPlayerActionEvent(int player, int action);
+    public event ValidPlayerActionEvent OnValidPlayerAction;
     #endregion
 
     // The amount of players
@@ -131,6 +133,8 @@ public class TexasHoldemBoard
 
         Logger.LogInfo($"Player {_activePlayer} took action: {lastPickedAction}, money in pot: {pot} | player money: {players[activePlayer].money}");
 
+        OnValidPlayerAction?.Invoke(player, (int)BettingActions.Bet);
+
         FinishTurn();
     }
     public void Check(int player)
@@ -152,6 +156,8 @@ public class TexasHoldemBoard
 
         Logger.LogInfo($"Player {_activePlayer} took action: {lastPickedAction}, money in pot: {pot} | player money: {players[activePlayer].money}");
 
+        OnValidPlayerAction?.Invoke(player, (int)BettingActions.Check);
+
         FinishTurn();
     }
     public void Fold(int player)
@@ -159,6 +165,8 @@ public class TexasHoldemBoard
         if (!ValidAction(player)) return;
 
         Logger.LogInfo($"Player {_activePlayer} took action: {BettingActions.Fold}, money in pot: {pot} | player money: {players[activePlayer].money}");
+
+        OnValidPlayerAction?.Invoke(player, (int)BettingActions.Fold);
 
         players[_activePlayer].isInHand = false;
 
@@ -224,6 +232,8 @@ public class TexasHoldemBoard
 
         Logger.LogInfo($"Player {_activePlayer} took action: {lastPickedAction}, money in pot: {pot} | player money: {players[activePlayer].money}");
 
+        OnValidPlayerAction?.Invoke(player, (int)BettingActions.Raise);
+
         FinishTurn();
     }
     public void Call(int player)
@@ -247,6 +257,8 @@ public class TexasHoldemBoard
         lastPickedAction = BettingActions.Call;
 
         Logger.LogInfo($"Player {_activePlayer} took action: {lastPickedAction}, money in pot: {pot} | player money: {players[activePlayer].money}");
+        
+        OnValidPlayerAction?.Invoke(player, (int)BettingActions.Call);
 
         FinishTurn();
     }
