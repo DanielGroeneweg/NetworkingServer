@@ -576,7 +576,7 @@ public class TexasHoldemBoard
         players.Clear();
         pot = 0;
         phasePot = 0;
-        _activePlayer = 1;
+        _activePlayer = 0;
         cardsOnBoard = new Card[5];
         betToBeMatched = 0;
         roundRunning = false;
