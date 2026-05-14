@@ -556,6 +556,7 @@ public class TexasHoldemBoard
             return;
         }
 
+        players.Clear();
         _playerAmount = playerAmount;
 
         for (int i = 0; i < _playerAmount; i++)
