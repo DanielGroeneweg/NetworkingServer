@@ -139,7 +139,7 @@ public class Server
                 Logger.LogInfo($"Removed player {playerID}");
             }
 
-            if (host == conn)
+            if (host.Equals(conn))
             {
                 host = connections.Count > 0 ? connections[0] : null;
                 if (host != null) host.Send(new OSCMessageOut("/SendHostInformation").GetBytes());
@@ -412,7 +412,7 @@ public class Server
 
         foreach (TcpNetworkConnection connection in playerIDs.Keys)
         {
-            if (playerIDs[connection] == player)
+            if (playerIDs[connection].Equals(player))
             {
                 connection.Send(message.GetBytes());
                 break;
@@ -434,7 +434,7 @@ public class Server
     {
         foreach (TcpNetworkConnection connection in playerIDs.Keys)
         {
-            if (playerIDs[connection] == player)
+            if (playerIDs[connection].Equals(player))
             {
                 OSCMessageOut message = new OSCMessageOut("/DealPlayerCards").AddInt((int)card1.rank).AddInt((int)card1.suit).AddInt((int)card2.rank).AddInt((int)card2.suit);
                 connection.Send(message.GetBytes());
@@ -462,7 +462,7 @@ public class Server
         OSCMessageOut message = new OSCMessageOut("/InvalidAction").AddString(error);
         foreach (TcpNetworkConnection connection in playerIDs.Keys)
         {
-            if (playerIDs[connection] == player)
+            if (playerIDs[connection].Equals(player))
             {
                 connection.Send(message.GetBytes());
                 break;
