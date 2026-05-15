@@ -842,7 +842,7 @@ public class TexasHoldemBoard
                 {
                     if (players[id].isInHand)
                     {
-                        OnRoundEnd.Invoke(new List<int>() { id });
+                        EndRound(new List<int>() { id });
                         return;
                     }
                 }
