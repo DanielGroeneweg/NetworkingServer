@@ -55,6 +55,9 @@ public class TexasHoldemBoard
 
     public delegate void ValidPlayerActionEvent(int player, int action);
     public event ValidPlayerActionEvent OnValidPlayerAction;
+
+    public delegate void BankruptPlayerEvent(int player);
+    public event BankruptPlayerEvent OnBankruptPlayer;
     #endregion
 
     // The amount of players
@@ -630,6 +633,7 @@ public class TexasHoldemBoard
             }
             else
                 player.isInHand = false;
+                
         }
 
         deckOfCards = new DeckOfCards(true);
@@ -642,6 +646,7 @@ public class TexasHoldemBoard
             if (!player.isInHand)
             {
                 Logger.LogInfo($"Player {id} has no money and can thus not participate anymore!");
+                OnBankruptPlayer?.Invoke(id);
                 continue;
             }
 

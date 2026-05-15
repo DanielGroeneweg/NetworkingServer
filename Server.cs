@@ -195,6 +195,7 @@ public class Server
         board.OnGameEnd -= GameEndRpc;
         board.OnPlayerCardInfo -= PlayerCardInfoRpc;
         board.OnValidPlayerAction -= ValidPlayerActionRpc;
+        board.OnBankruptPlayer -= BankruptPlayerRpc;
 
         // Variable reset
         host = null;
@@ -221,6 +222,7 @@ public class Server
         board.OnGameEnd += GameEndRpc;
         board.OnPlayerCardInfo += PlayerCardInfoRpc;
         board.OnValidPlayerAction += ValidPlayerActionRpc;
+        board.OnBankruptPlayer += BankruptPlayerRpc;
 
         //(Note: no unsubscribe needed in OnDestroy, since the server owns the private board variable.)
 
@@ -520,6 +522,18 @@ public class Server
     {
         OSCMessageOut message = new OSCMessageOut("/ValidPlayerAction").AddInt(player).AddInt(action);
         Broadcast(message.GetBytes());
+    }
+    void BankruptPlayerRpc(int player)
+    {
+        OSCMessageOut message = new OSCMessageOut("/Bankrupt");
+        foreach(TcpNetworkConnection conn in playerIDs.Keys)
+        {
+            if (playerIDs[conn] == player)
+            {
+                conn.Send(message.GetBytes());
+                break;
+            }
+        }
     }
     #endregion
 }
