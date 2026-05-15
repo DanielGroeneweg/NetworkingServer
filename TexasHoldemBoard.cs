@@ -41,7 +41,7 @@ public class TexasHoldemBoard
     public delegate void InvalidNewGameEvent(string error);
     public event InvalidNewGameEvent OnInvalidNewGame;
 
-    public delegate void PlayerInformationEvent(int playerAmount, int startingMoney);
+    public delegate void PlayerInformationEvent(List<int> playerIDs, int startingMoney);
     public event PlayerInformationEvent OnPlayerInformation;
 
     public delegate void RoundEndEvent(List<int> winners);
@@ -567,7 +567,7 @@ public class TexasHoldemBoard
 
         gameRunning = true;
 
-        OnPlayerInformation.Invoke(playerAmount, startingMoney);
+        OnPlayerInformation.Invoke(players.Keys.ToList(), startingMoney);
 
         StartRound();
     }
