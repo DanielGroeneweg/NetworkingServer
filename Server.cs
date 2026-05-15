@@ -135,6 +135,7 @@ public class Server
             {
                 playerIDs.Remove(conn);
                 board.RemovePlayer(playerID);
+                Broadcast(new OSCMessageOut("/PlayerDC").AddInt(playerID).GetBytes());
                 Logger.LogInfo($"Removed player {playerID}");
             }
 
