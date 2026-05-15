@@ -479,9 +479,15 @@ public class Server
         OSCMessageOut message = new OSCMessageOut("/InvalidNewGame").AddString(error);
         host.Send(message.GetBytes());
     }
-    void PlayerInformationRpc(int playerAmount, int startingMoney)
+    void PlayerInformationRpc(List<int> playerIDs, int startingMoney)
     {
-        OSCMessageOut message = new OSCMessageOut("/PlayerInformation").AddInt(playerAmount).AddInt(startingMoney);
+        OSCMessageOut message = new OSCMessageOut("/PlayerInformation");
+        for (int i = 1; i <= 6; i++)
+        {
+            if (i - 1 < playerIDs.Count) message.AddInt(playerIDs[i - 1]);
+            else message.AddInt(-1);
+        }
+        message.AddInt(startingMoney);
         Broadcast(message.GetBytes());
     }
     void EndRoundRpc(List<int> winningPlayers)
