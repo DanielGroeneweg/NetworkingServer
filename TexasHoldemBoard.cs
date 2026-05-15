@@ -329,7 +329,11 @@ public class TexasHoldemBoard
 
         while (!foundNextPlayer)
         {
-            if (EveryoneAllIn()) DealRemainingCards();
+            if (EveryoneAllIn())
+            {
+                DealRemainingCards();
+                return;
+            }
 
             idIndexInList = idIndexInList >= ids.Count - 1 ? 0 : idIndexInList + 1;
 
@@ -349,7 +353,11 @@ public class TexasHoldemBoard
                 foundNextPlayer = true;
 
             // Safety break
-            if (_activePlayer == startPlayer) AdvancePhase();
+            if (_activePlayer == startPlayer)
+            {
+                AdvancePhase();
+                return;
+            }
         }
 
         OnNextPlayer?.Invoke(_activePlayer, (int)actionTaken);
